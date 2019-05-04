@@ -4,6 +4,9 @@ import com.skuniv.cs.geonyeong.kaggleapi.service.PostService;
 import com.skuniv.cs.geonyeong.kaggleapi.vo.Answer;
 import com.skuniv.cs.geonyeong.kaggleapi.vo.Comment;
 import com.skuniv.cs.geonyeong.kaggleapi.vo.Question;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.SwaggerDefinition;
+import io.swagger.annotations.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
@@ -12,6 +15,10 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 
 @Slf4j
+@Api(value = "/api/v1/kaggle/stackoverflow/post", tags = {"Kaggle Stackoverflow Post" })
+@SwaggerDefinition(tags = {
+        @Tag(name = "Kaggle Stackoverflow Post", description = "캐글 스택오버플로우 Post관련 controller")
+})
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/kaggle/stackoverflow/post")
