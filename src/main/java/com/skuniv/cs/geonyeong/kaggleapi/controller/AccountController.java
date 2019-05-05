@@ -1,11 +1,13 @@
 package com.skuniv.cs.geonyeong.kaggleapi.controller;
 
+import com.skuniv.cs.geonyeong.kaggleapi.service.AccountService;
 import com.skuniv.cs.geonyeong.kaggleapi.vo.Account;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.SwaggerDefinition;
 import io.swagger.annotations.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -17,24 +19,25 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/kaggle/stackoverflow/account")
 public class AccountController {
+    private final AccountService accountService;
 
     @RequestMapping(value = "/{accountId}", method = {RequestMethod.GET})
-    public String selectAccount(@PathVariable String accountId) {
-        return "";
+    public Account selectAccount(@PathVariable String accountId) {
+        return accountService.selectAccount(accountId);
     }
 
-    @RequestMapping(value = "/", method = {RequestMethod.POST})
-    public Account insertAccount(@RequestBody Account account) {
-        return account;
+    @RequestMapping(method = {RequestMethod.POST}, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Account createAccount(@RequestBody Account account) {
+        return accountService.createAccount(account);
     }
 
-    @RequestMapping(value = "/", method = {RequestMethod.PUT})
+    @RequestMapping(method = {RequestMethod.PUT}, produces = MediaType.APPLICATION_JSON_VALUE)
     public Account updateAccount(@RequestBody Account account) {
-        return account;
+        return accountService.updateAccount(account);
     }
 
     @RequestMapping(value = "/{accountId}", method = {RequestMethod.DELETE})
     public String deleteAccount(@PathVariable String accountId) {
-        return "";
+        return accountService.deleteAccount(accountId);
     }
 }

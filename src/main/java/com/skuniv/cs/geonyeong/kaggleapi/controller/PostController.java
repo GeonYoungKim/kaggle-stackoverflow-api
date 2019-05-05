@@ -40,7 +40,7 @@ public class PostController {
         return postService.updateQuestion(question);
     }
 
-    @RequestMapping(value = "/question/{questionId}", method = {RequestMethod.DELETE}, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/question/{questionId}", method = {RequestMethod.DELETE})
     public String deleteQuestion(@PathVariable String questionId) {
         return postService.deleteQuestion(questionId);
     }
@@ -49,12 +49,13 @@ public class PostController {
     public Answer createAnswer(@RequestBody Answer answer) {
         return postService.createAnswer(answer);
     }
+
     @RequestMapping(value = "/answer", method = {RequestMethod.PUT}, produces = MediaType.APPLICATION_JSON_VALUE)
     public Answer updateAnswer(@RequestBody Answer answer) {
         return postService.updateAnswer(answer);
     }
 
-    @RequestMapping(value = "/answer", method = {RequestMethod.DELETE}, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/answer", method = {RequestMethod.DELETE})
     public String deleteAnswer(@RequestParam("answerId") String answerId, @RequestParam("questionId") String questionId) {
         return postService.deleteAnswer(answerId, questionId);
     }
@@ -63,12 +64,13 @@ public class PostController {
     public Comment createComment(@RequestBody Comment comment)  {
         return postService.createComment(comment);
     }
+
     @RequestMapping(value = "/comment", method = {RequestMethod.PUT}, produces = MediaType.APPLICATION_JSON_VALUE)
     public Comment updateComment(@RequestBody Comment comment) {
         return postService.updateComment(comment);
     }
 
-    @RequestMapping(value = "/comment", method = {RequestMethod.DELETE}, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/comment", method = {RequestMethod.DELETE})
     public String deleteComment(@RequestParam("commentId") String commentId, @RequestParam("postId") String postId) {
         return postService.deleteComment(commentId, postId);
     }

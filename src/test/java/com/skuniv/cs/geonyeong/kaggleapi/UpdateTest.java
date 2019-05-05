@@ -1,5 +1,6 @@
 package com.skuniv.cs.geonyeong.kaggleapi;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.skuniv.cs.geonyeong.kaggleapi.vo.Account;
 import com.skuniv.cs.geonyeong.kaggleapi.vo.Comment;
@@ -65,5 +66,31 @@ public class UpdateTest {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @Test
+    public void accountSelectTest() {
+        BoolQueryBuilder searchCommentLstQuery = QueryBuilders.boolQuery().must(QueryBuilders.matchQuery("account.id", "847917"));
+        SearchRequest searchRequest = new SearchRequest(esIndex).types(esType).source(new SearchSourceBuilder().fetchSource(new String[]{"account.*"},new String[]{}).query(searchCommentLstQuery).size(1));
+        SearchResponse searchResponse = null;
+        try {
+            searchResponse = restHighLevelClient.search(searchRequest, RequestOptions.DEFAULT);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        String accountJson = gson.toJson(searchResponse.getHits().getAt(0).getSourceAsMap().get("account"));
+        Account account = gson.fromJson(accountJson, Account.class);
+        log.info("account => {}", account.toString());
+    }
+
+    @Test
+    public void objectToMapTest() {
+        Account account = Account.builder()
+                .id("1106578")
+                .displayName("부천 사는 94년생 개발자")
+                .age("26")
+                .createDate("2019-05-05 15:57:00")
+                .build()
+                ;
     }
 }

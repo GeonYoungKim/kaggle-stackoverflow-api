@@ -1,5 +1,6 @@
 package com.skuniv.cs.geonyeong.kaggleapi.configuration;
 
+import com.skuniv.cs.geonyeong.kaggleapi.service.EsClient;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpHost;
 import org.elasticsearch.client.RestClient;
@@ -18,7 +19,7 @@ public class EsConfiguration {
     private int port;
 
     @Bean
-    public RestHighLevelClient restHighLevelClient() {
-        return new RestHighLevelClient(RestClient.builder(new HttpHost(host, port)));
+    public EsClient esClient() {
+        return new EsClient(new RestHighLevelClient(RestClient.builder(new HttpHost(host, port))));
     }
 }
