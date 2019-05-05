@@ -1,7 +1,6 @@
 package com.skuniv.cs.geonyeong.kaggleapi.dao;
 
 import com.google.gson.Gson;
-import com.skuniv.cs.geonyeong.kaggleapi.exception.EsResponseParsingException;
 import com.skuniv.cs.geonyeong.kaggleapi.service.EsClient;
 import com.skuniv.cs.geonyeong.kaggleapi.vo.Account;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +10,6 @@ import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.update.UpdateRequest;
-import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -22,7 +20,6 @@ import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
-import java.io.IOException;
 import java.util.Map;
 
 @Slf4j
