@@ -26,6 +26,7 @@ dependencies {
     implementation 'org.elasticsearch:elasticsearch:6.7.1'
     implementation 'org.elasticsearch.client:elasticsearch-rest-high-level-client:6.7.1'
     implementation 'com.google.code.gson:gson:2.8.5'
+    implementation 'org.apache.commons:commons-lang3:3.9'
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'

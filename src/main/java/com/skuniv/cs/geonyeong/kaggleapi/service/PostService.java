@@ -1,5 +1,6 @@
 package com.skuniv.cs.geonyeong.kaggleapi.service;
 
+import com.google.gson.Gson;
 import com.skuniv.cs.geonyeong.kaggleapi.dao.PostDao;
 import com.skuniv.cs.geonyeong.kaggleapi.utils.TimeUtil;
 import com.skuniv.cs.geonyeong.kaggleapi.vo.*;
@@ -9,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.UUID;
@@ -18,61 +18,66 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class PostService {
+    private Gson gson = new Gson();
+
     private final PostDao postDao;
 
     private final String ANSWER_JOIN_NAME = "answer";
     private final String QUESTION_JOIN_NAME = "question";
     private final Integer INIT_VALUE = 0;
 
-    public Comment insertComment(Comment comment) throws IOException {
-        comment = (Comment) setBasePostMeta(comment);
-        comment.setCommentId(createUUID());
-        return postDao.insertComment(comment);
-    }
-
-    public Answer insertAnswer(Answer answer) throws IOException {
-        answer = (Answer) setBaseQnAMeta(answer, ANSWER_JOIN_NAME);
-        answer.setId(createUUID());
-        answer.getQnaJoin().setParent(answer.getParentId());
-        return postDao.insertAnswer(answer);
-    }
-
-    public Question insertQuestion(Question question) throws IOException {
+    public Question createQuestion(Question question) {
         question = (Question) setBaseQnAMeta(question, QUESTION_JOIN_NAME);
         question.setId(createUUID());
         question.setAnswerCount(INIT_VALUE);
         question.setFavoriteCount(INIT_VALUE);
         question.setViewCount(INIT_VALUE);
-        return postDao.insertQuestion(question);
-    }
-
-    public Comment updateComment(Comment comment) {
-        return postDao.updateComment(comment);
-    }
-
-    public Answer updateAnswer(Answer answer) {
-        return postDao.updateAnswer(answer);
+        log.info("create question => {}", gson.toJson(question));
+        return postDao.createQuestion(question);
     }
 
     public Question updateQuestion(Question question) {
         return postDao.updateQuestion(question);
     }
 
-    public String deleteComment(String commentId) {
-        return postDao.deleteComment(commentId);
-    }
-
-    public String deleteAnswer(String answerId) {
-        return postDao.deleteAnswer(answerId);
-    }
-
     public String deleteQuestion(String questionId) {
         return postDao.deleteQuestion(questionId);
     }
 
+    public Answer createAnswer(Answer answer) {
+        answer = (Answer) setBaseQnAMeta(answer, ANSWER_JOIN_NAME);
+        answer.setId(createUUID());
+        answer.getQnaJoin().setParent(answer.getParentId());
+        log.info("create answer => {}", gson.toJson(answer));
+        return postDao.createAnswer(answer);
+    }
+
+    public Answer updateAnswer(Answer answer) {
+        return postDao.updateAnswer(answer);
+    }
+
+    public String deleteAnswer(String answerId, String questionId) {
+        return postDao.deleteAnswer(answerId, questionId);
+    }
+
+    public Comment createComment(Comment comment) {
+        comment = (Comment) setBasePostMeta(comment);
+        comment.setCommentId(createUUID());
+        log.info("comment create => {}", gson.toJson(comment));
+        return postDao.createComment(comment);
+    }
+
+    public Comment updateComment(Comment comment) {
+        return postDao.updateComment(comment);
+    }
+
+    public String deleteComment(String commentId, String postId) {
+        return postDao.deleteComment(commentId, postId);
+    }
+
     private String createUUID() {
         UUID uuid = UUID.randomUUID();
-        return String.valueOf(Math.abs(uuid.hashCode()));
+        return String.valueOf(uuid);
     }
 
     private QnAMeta setBaseQnAMeta(QnAMeta qnAMeta, String joinName) {
