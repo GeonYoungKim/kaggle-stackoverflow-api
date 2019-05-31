@@ -1,7 +1,7 @@
 package com.skuniv.cs.geonyeong.kaggleapi.exception;
 
 
-public class EsResponseParsingException extends RuntimeException {
+public class EsResponseParsingException extends IllegalArgumentException {
 
     public EsResponseParsingException() {
     }

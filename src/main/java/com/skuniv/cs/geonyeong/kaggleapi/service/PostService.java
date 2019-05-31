@@ -2,10 +2,14 @@ package com.skuniv.cs.geonyeong.kaggleapi.service;
 
 import com.google.gson.Gson;
 import com.skuniv.cs.geonyeong.kaggleapi.dao.PostDao;
+import com.skuniv.cs.geonyeong.kaggleapi.exception.NoneQuestionDataExcepion;
 import com.skuniv.cs.geonyeong.kaggleapi.utils.TimeUtil;
 import com.skuniv.cs.geonyeong.kaggleapi.vo.*;
 import com.skuniv.cs.geonyeong.kaggleapi.vo.meta.PostMeta;
 import com.skuniv.cs.geonyeong.kaggleapi.vo.meta.QnAMeta;
+import com.skuniv.cs.geonyeong.kaggleapi.vo.response.PostResult;
+import com.skuniv.cs.geonyeong.kaggleapi.vo.response.SearchResult;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -98,5 +102,13 @@ public class PostService {
         postMeta.setCreateDate(TimeUtil.toStr(new Date()));
         postMeta.setScore(INIT_VALUE);
         return postMeta;
+    }
+
+    public SearchResult search(int pageNo, String content) {
+        return postDao.search(pageNo, content);
+    }
+
+    public PostResult getPost(String postId) throws NoneQuestionDataExcepion {
+        return postDao.getPost(postId);
     }
 }

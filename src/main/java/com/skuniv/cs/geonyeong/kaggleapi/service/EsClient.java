@@ -7,13 +7,17 @@ import com.skuniv.cs.geonyeong.kaggleapi.enums.PostType;
 import com.skuniv.cs.geonyeong.kaggleapi.exception.EsResponseParsingException;
 import com.skuniv.cs.geonyeong.kaggleapi.vo.Comment;
 import com.skuniv.cs.geonyeong.kaggleapi.vo.param.CommentListParam;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.action.DocWriteRequest;
 import org.elasticsearch.action.bulk.BulkRequest;
 import org.elasticsearch.action.delete.DeleteRequest;
+import org.elasticsearch.action.get.GetRequest;
+import org.elasticsearch.action.get.GetResponse;
+import org.elasticsearch.action.get.MultiGetRequest;
+import org.elasticsearch.action.get.MultiGetResponse;
 import org.elasticsearch.action.index.IndexRequest;
-import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.update.UpdateRequest;
@@ -34,6 +38,7 @@ import java.util.stream.Collectors;
 public class EsClient {
     private static final Gson gson = new Gson();
 
+    @Getter
     private final RestHighLevelClient restHighLevelClient;
 
     private final String COMMENT_COUNT_FIELD_NAME = "commentCount";
@@ -127,6 +132,24 @@ public class EsClient {
     public void update(UpdateByQueryRequest updateByQueryRequest) {
         try {
             restHighLevelClient.updateByQuery(updateByQueryRequest, RequestOptions.DEFAULT);
+        } catch (IOException e) {
+            log.error("updateByQuery response body parsing error => {}", e);
+            throw new EsResponseParsingException();
+        }
+    }
+
+    public GetResponse get(GetRequest getRequest) {
+        try {
+            return restHighLevelClient.get(getRequest, RequestOptions.DEFAULT);
+        } catch (IOException e) {
+            log.error("updateByQuery response body parsing error => {}", e);
+            throw new EsResponseParsingException();
+        }
+    }
+
+    public MultiGetResponse multiGet(MultiGetRequest multiGetRequest) {
+        try {
+            return restHighLevelClient.mget(multiGetRequest, RequestOptions.DEFAULT);
         } catch (IOException e) {
             log.error("updateByQuery response body parsing error => {}", e);
             throw new EsResponseParsingException();
