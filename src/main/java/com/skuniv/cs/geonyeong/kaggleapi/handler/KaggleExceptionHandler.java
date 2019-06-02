@@ -2,8 +2,11 @@ package com.skuniv.cs.geonyeong.kaggleapi.handler;
 
 import com.skuniv.cs.geonyeong.kaggleapi.enums.StackoverFlowExceptionType;
 import com.skuniv.cs.geonyeong.kaggleapi.exception.EsResponseParsingException;
+import com.skuniv.cs.geonyeong.kaggleapi.exception.FindIdException;
+import com.skuniv.cs.geonyeong.kaggleapi.exception.FindPasswordException;
 import com.skuniv.cs.geonyeong.kaggleapi.exception.NoneQuestionDataExcepion;
-import lombok.AllArgsConstructor;
+import com.skuniv.cs.geonyeong.kaggleapi.exception.SignInInvalidException;
+import com.skuniv.cs.geonyeong.kaggleapi.vo.response.BaseExceptionResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -27,9 +30,28 @@ public class KaggleExceptionHandler {
         );
     }
 
-    @AllArgsConstructor
-    private class BaseExceptionResponse {
-        private int status;
-        private String message;
+    @ExceptionHandler(value = SignInInvalidException.class)
+    public BaseExceptionResponse handleSignInInvalidException(SignInInvalidException e) {
+        log.info("handleSignInInvalidException");
+        return new BaseExceptionResponse(
+            StackoverFlowExceptionType.SIGN_IN_INVALID_EXCEPTION.getStatus(),
+            StackoverFlowExceptionType.SIGN_IN_INVALID_EXCEPTION.getMessage()
+        );
+    }
+
+    @ExceptionHandler(value = FindIdException.class)
+    public BaseExceptionResponse handleFindIdException(FindIdException e) {
+        return new BaseExceptionResponse(
+            StackoverFlowExceptionType.FIND_ID_EXCEPTION.getStatus(),
+            StackoverFlowExceptionType.FIND_ID_EXCEPTION.getMessage()
+        );
+    }
+
+    @ExceptionHandler(value = FindPasswordException.class)
+    public BaseExceptionResponse handleFindPasswordException(FindPasswordException e) {
+        return new BaseExceptionResponse(
+            StackoverFlowExceptionType.FIND_PASSWORD_EXCEPTION.getStatus(),
+            StackoverFlowExceptionType.FIND_PASSWORD_EXCEPTION.getMessage()
+        );
     }
 }

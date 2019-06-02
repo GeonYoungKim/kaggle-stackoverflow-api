@@ -1,13 +1,20 @@
 package com.skuniv.cs.geonyeong.kaggleapi.dao;
 
 import com.google.gson.Gson;
+import com.skuniv.cs.geonyeong.kaggleapi.exception.FindIdException;
+import com.skuniv.cs.geonyeong.kaggleapi.exception.FindPasswordException;
+import com.skuniv.cs.geonyeong.kaggleapi.exception.SignInInvalidException;
 import com.skuniv.cs.geonyeong.kaggleapi.service.EsClient;
 import com.skuniv.cs.geonyeong.kaggleapi.vo.Account;
+import java.util.Arrays;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.action.delete.DeleteRequest;
+import org.elasticsearch.action.get.GetRequest;
 import org.elasticsearch.action.index.IndexRequest;
+import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.SearchRequest;
+import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.update.UpdateRequest;
 import org.elasticsearch.common.xcontent.XContentType;
@@ -87,5 +94,52 @@ public class AccountDao {
         });
         log.info("script code => {}", sb.toString());
         return sb.toString();
+    }
+
+    public Account findId(Account account) throws FindIdException {
+        SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder()
+            .query(QueryBuilders.boolQuery()
+                .must(QueryBuilders.termQuery("displayName", account.getDisplayName()))
+                .must(QueryBuilders.termQuery("email.keyword", account.getEmail()))
+            );
+
+        SearchRequest searchRequest = new SearchRequest(esAccountIndex).types(esType).source(searchSourceBuilder);
+        SearchResponse searchResponse = esClient.search(searchRequest);
+        if(searchResponse.getHits().getHits().length == 0) {
+            throw new FindIdException("find not id");
+        }
+        return gson.fromJson(Arrays.stream(searchResponse.getHits().getHits()).findFirst().get().getSourceAsString(), Account.class);
+    }
+
+    public Account findPassword(Account account) throws FindPasswordException {
+        SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder()
+            .query(QueryBuilders.boolQuery()
+                .must(QueryBuilders.termQuery("email.keyword", account.getEmail()))
+                .must(QueryBuilders.termQuery("id", account.getId()))
+            );
+
+        SearchRequest searchRequest = new SearchRequest(esAccountIndex).types(esType).source(searchSourceBuilder);
+        SearchResponse searchResponse = esClient.search(searchRequest);
+        if(searchResponse.getHits().getHits().length == 0) {
+            throw new FindPasswordException("find not password");
+        }
+        return gson.fromJson(Arrays.stream(searchResponse.getHits().getHits()).findFirst().get().getSourceAsString(), Account.class);
+    }
+
+    public Account signIn(Account account) throws SignInInvalidException {
+        log.info("account => {}", gson.toJson(account));
+        SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder()
+            .query(QueryBuilders.boolQuery()
+                .must(QueryBuilders.termQuery("password.keyword", account.getPassword()))
+                .must(QueryBuilders.termQuery("id", account.getId()))
+            );
+
+        SearchRequest searchRequest = new SearchRequest(esAccountIndex).types(esType).source(searchSourceBuilder);
+        SearchResponse searchResponse = esClient.search(searchRequest);
+        if(searchResponse.getHits().getHits().length == 0) {
+            log.info("sign in result length = 0");
+            throw new SignInInvalidException("signIn invalid id or password");
+        }
+        return gson.fromJson(Arrays.stream(searchResponse.getHits().getHits()).findFirst().get().getSourceAsString(), Account.class);
     }
 }

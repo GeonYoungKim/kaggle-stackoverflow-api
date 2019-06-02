@@ -3,6 +3,8 @@ com:
     cs:
       geonyeong:
         kaggle:
+          crypt:
+            key: 123456789789456123456
           es:
             host: dev-geon-test001-ncl.nfra.io
             port: 9200
