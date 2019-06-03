@@ -2,6 +2,7 @@ package com.skuniv.cs.geonyeong.kaggleapi.controller;
 
 import com.google.gson.Gson;
 import com.skuniv.cs.geonyeong.kaggleapi.exception.NoneQuestionDataExcepion;
+import com.skuniv.cs.geonyeong.kaggleapi.exception.PostAuthenticationException;
 import com.skuniv.cs.geonyeong.kaggleapi.service.PostService;
 import com.skuniv.cs.geonyeong.kaggleapi.vo.Answer;
 import com.skuniv.cs.geonyeong.kaggleapi.vo.Comment;
@@ -20,6 +21,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -58,8 +60,10 @@ public class PostController {
 
     @RequestMapping(value = "/question", method = {
         RequestMethod.POST}, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Question createQuestion(@RequestBody Question question) {
-        return postService.createQuestion(question);
+    public Question createQuestion(@RequestBody Question question, @RequestHeader(value = "token") String token)
+        throws PostAuthenticationException {
+        log.info("token => {}", token);
+        return postService.createQuestion(question, token);
     }
 
     @RequestMapping(value = "/question", method = {
@@ -75,8 +79,13 @@ public class PostController {
 
     @RequestMapping(value = "/answer", method = {
         RequestMethod.POST}, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Answer createAnswer(@RequestBody Answer answer) {
-        return postService.createAnswer(answer);
+    public Answer createAnswer(@RequestBody Answer answer, @RequestHeader(value = "token") String token )
+        throws PostAuthenticationException {
+        log.info("token => {}", token);
+        log.info("answer => {}", answer);
+        postService.createAnswer(answer, token);
+        return answer;
+//        return postService.createAnswer(answer);
     }
 
     @RequestMapping(value = "/answer", method = {

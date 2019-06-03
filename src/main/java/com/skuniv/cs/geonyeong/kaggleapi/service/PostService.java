@@ -3,6 +3,7 @@ package com.skuniv.cs.geonyeong.kaggleapi.service;
 import com.google.gson.Gson;
 import com.skuniv.cs.geonyeong.kaggleapi.dao.PostDao;
 import com.skuniv.cs.geonyeong.kaggleapi.exception.NoneQuestionDataExcepion;
+import com.skuniv.cs.geonyeong.kaggleapi.exception.PostAuthenticationException;
 import com.skuniv.cs.geonyeong.kaggleapi.utils.TimeUtil;
 import com.skuniv.cs.geonyeong.kaggleapi.vo.*;
 import com.skuniv.cs.geonyeong.kaggleapi.vo.meta.PostMeta;
@@ -10,6 +11,7 @@ import com.skuniv.cs.geonyeong.kaggleapi.vo.meta.QnAMeta;
 import com.skuniv.cs.geonyeong.kaggleapi.vo.response.PostResult;
 import com.skuniv.cs.geonyeong.kaggleapi.vo.response.SearchResult;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -25,12 +27,22 @@ public class PostService {
     private Gson gson = new Gson();
 
     private final PostDao postDao;
+    private final AuthenticationManageService authenticationManageService;
 
     private final String ANSWER_JOIN_NAME = "answer";
     private final String QUESTION_JOIN_NAME = "question";
     private final Integer INIT_VALUE = 0;
 
-    public Question createQuestion(Question question) {
+    public Question createQuestion(Question question, String token)
+        throws PostAuthenticationException {
+        Optional<Account> accountOptional = authenticationManageService.getAccount(token);
+        if(accountOptional.isPresent()) {
+            question.setAccount(accountOptional.get());
+            log.info("accountOptional.isPresent()");
+        } else {
+            log.info("PostAuthenticationException");
+            throw new PostAuthenticationException();
+        }
         question = (Question) setBaseQnAMeta(question, QUESTION_JOIN_NAME);
         question.setId(createUUID());
         question.setAnswerCount(INIT_VALUE);
@@ -48,7 +60,13 @@ public class PostService {
         return postDao.deleteQuestion(questionId);
     }
 
-    public Answer createAnswer(Answer answer) {
+    public Answer createAnswer(Answer answer, String token) throws PostAuthenticationException {
+        Optional<Account> accountOptional = authenticationManageService.getAccount(token);
+        if(accountOptional.isPresent()) {
+            answer.setAccount(accountOptional.get());
+        } else {
+            throw new PostAuthenticationException();
+        }
         answer = (Answer) setBaseQnAMeta(answer, ANSWER_JOIN_NAME);
         answer.setId(createUUID());
         answer.getQnaJoin().setParent(answer.getParentId());
@@ -67,7 +85,6 @@ public class PostService {
     public Comment createComment(Comment comment) {
         comment = (Comment) setBasePostMeta(comment);
         comment.setCommentId(createUUID());
-        log.info("comment create => {}", gson.toJson(comment));
         return postDao.createComment(comment);
     }
 

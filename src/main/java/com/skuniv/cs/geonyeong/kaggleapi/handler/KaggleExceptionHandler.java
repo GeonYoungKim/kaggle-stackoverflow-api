@@ -5,6 +5,7 @@ import com.skuniv.cs.geonyeong.kaggleapi.exception.EsResponseParsingException;
 import com.skuniv.cs.geonyeong.kaggleapi.exception.FindIdException;
 import com.skuniv.cs.geonyeong.kaggleapi.exception.FindPasswordException;
 import com.skuniv.cs.geonyeong.kaggleapi.exception.NoneQuestionDataExcepion;
+import com.skuniv.cs.geonyeong.kaggleapi.exception.PostAuthenticationException;
 import com.skuniv.cs.geonyeong.kaggleapi.exception.SignInInvalidException;
 import com.skuniv.cs.geonyeong.kaggleapi.vo.response.BaseExceptionResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -52,6 +53,14 @@ public class KaggleExceptionHandler {
         return new BaseExceptionResponse(
             StackoverFlowExceptionType.FIND_PASSWORD_EXCEPTION.getStatus(),
             StackoverFlowExceptionType.FIND_PASSWORD_EXCEPTION.getMessage()
+        );
+    }
+
+    @ExceptionHandler(value = PostAuthenticationException.class)
+    public BaseExceptionResponse handlePostAuthenticationException(PostAuthenticationException e) {
+        return new BaseExceptionResponse(
+            StackoverFlowExceptionType.POST_AUTHENTICATION_EXCEPTION.getStatus(),
+            StackoverFlowExceptionType.POST_AUTHENTICATION_EXCEPTION.getMessage()
         );
     }
 }

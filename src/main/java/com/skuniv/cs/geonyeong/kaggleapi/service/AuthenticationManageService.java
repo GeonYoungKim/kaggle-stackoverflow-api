@@ -4,6 +4,7 @@ import com.skuniv.cs.geonyeong.kaggleapi.vo.Account;
 import java.security.MessageDigest;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Service;
@@ -31,6 +32,10 @@ public class AuthenticationManageService implements InitializingBean {
             sb.append(Integer.toString((byteData[i]&0xff) + 0x100, 16).substring(1));
         }
         return sb.toString();
+    }
+
+    public Optional<Account> getAccount(String token) {
+        return Optional.ofNullable(this.tokenMap.get(token));
     }
 
     @Override

@@ -11,7 +11,8 @@ public enum StackoverFlowExceptionType {
     NONE_QUESTION_DATE_EXCPETION(80802,"empty question data"),
     SIGN_IN_INVALID_EXCEPTION(80803, "signIn invalid id or password"),
     FIND_ID_EXCEPTION(80804, "아이디를 찾지 못하였습니다."),
-    FIND_PASSWORD_EXCEPTION(80805, "비밀번호를 찾지 못하였습니다.");
+    FIND_PASSWORD_EXCEPTION(80805, "비밀번호를 찾지 못하였습니다."),
+    POST_AUTHENTICATION_EXCEPTION(80806, "계정정보가 없습니다.")
     ;
     private int status;
     private String message;
